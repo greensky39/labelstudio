@@ -44,32 +44,45 @@ const RegionItemDesc = observer(({ item, setDraggable }) => {
   );
 });
 
-const RegionItemContent = observer(({ idx, item, setDraggable, setCheckItems, checkItems }) => {
+const RegionItemContent = observer(({ idx, item, setDraggable }) => {
   const itemElRef = useRef();
   const checkElRef = useRef();
+  const [checked, setChecked] = useState(false)
+  const [checkPublisherState, setCheckPublisherState] = useState([])
+
+    // pub 체크박스 개별선택
+    const onChangeEachPub = (e, id) => {
+      // 체크할 시 CheckList에 id값 넣기
+      if (e.target.checked && e.target.id === "publisher") {
+        setCheckPublisherState([...checkPublisherState, id]);
   
+        // 체크 해제할 시 CheckList에서 해당 id값이 `아닌` 값만 배열에 넣기
+      } else {
+        setCheckPublisherState(
+          checkPublisherState.filter((checkedId) => checkedId !== id)
+        );
+      }
+    };
+  
+
   useEffect(()=>{
+    console.log("item:", item)
     if (item.selected) {
       const el = itemElRef.current;
-      console.log("el :", el)
-      setCheckItems(checkItems)
       
       if (!el) return;
       const scroll = el.scrollIntoViewIfNeeded || el.scrollIntoView;
-
       scroll.call(el);
-      console.log("it's selected!")
+      // console.log("it's selected!")
     }
-  }, [item.selected, checkItems]);
-
+  }, [item.selected, checkPublisherState]);
 
 return (
   <>
-  
   <Block ref={itemElRef} name="region-item" mod={{ hidden : item.hidden }}>
       <Elem name="header" tag="div">
+        <Elem name="checkbox"><input ref={checkElRef} id="publisher" type="checkbox" onChange={(e) => onChangeEachPub(e, idx)} checked={checkPublisherState.includes(idx)}></input></Elem>
         <Elem name="counter">{isDefined(idx) ? idx + 1 : ""}</Elem>
-
         <Elem name="title" tag={Node} node={item} mix={styles.node}/>
 
         <Space size="small">
@@ -133,8 +146,7 @@ export const RegionItem = observer(({ item, idx, flat, setDraggable, onClick}) =
   }, [isAlive(item) && item.getOneColor()]);
 
   if (!isAlive(item)) return null;
-  const [checkItems, setCheckItems] = useState([]);
-
+  
   const classnames = [
     styles.lstitem,
     flat && styles.flat,
@@ -143,16 +155,6 @@ export const RegionItem = observer(({ item, idx, flat, setDraggable, onClick}) =
   ].filter(Boolean);
 
   const vars = getVars();
-
-    // 체크박스 전체 단일 개체 선택
-    const handleSingleCheck = (checked, id) => {
-      if (checked) {
-        setCheckItems([...checkItems, id]);
-      } else {
-        // 체크 해제
-        setCheckItems(checkItems.filter((el) => el !== id));
-      }
-    };
 
   return (
     <>
@@ -165,10 +167,8 @@ export const RegionItem = observer(({ item, idx, flat, setDraggable, onClick}) =
       style={vars}
       aria-label="region"
     >
-      <input type="checkbox" onChange={(e) => handleSingleCheck(e.target.checked, item.id)} checked={checkItems.includes(item.id) ? true : false}></input>
-      <RegionItemContent idx={idx} item={item} setDraggable={setDraggable} checkItems={checkItems} setCheckItems={setCheckItems} />
+      <RegionItemContent idx={idx} item={item} setDraggable={setDraggable} />
     </List.Item>
     </>
-    
   );
 });

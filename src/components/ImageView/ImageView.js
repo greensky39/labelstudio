@@ -67,17 +67,19 @@ const RegionsLayer = memo(({ regions, name, useLayers, showSelected = false }) =
 
 const Regions = memo(({ regions, useLayers = true, chunkSize  = 15, suggestion = false, showSelected = false }) => {
   return (
-    <ImageViewProvider value={{ suggestion }}>
-      {(chunkSize ? chunks(regions, chunkSize) : regions).map((chunk, i) => (
-        <RegionsLayer
-          key={`chunk-${i}`}
-          name={`chunk-${i}`}
-          regions={chunk}
-          useLayers={useLayers}
-          showSelected={showSelected}
-        />
-      ))}
-    </ImageViewProvider>
+    <>
+      <ImageViewProvider value={{ suggestion }}>
+        {(chunkSize ? chunks(regions, chunkSize) : regions).map((chunk, i) => (
+          <RegionsLayer
+            key={`chunk-${i}`}
+            name={`chunk-${i}`}
+            regions={chunk}
+            useLayers={useLayers}
+            showSelected={showSelected}
+          />
+        ))}
+      </ImageViewProvider>
+    </>
   );
 });
 
@@ -87,7 +89,7 @@ const DrawingRegion = observer(({ item }) => {
 
   return (
     <Wrapper>
-      {drawingRegion?<Region key={`drawing`} region={drawingRegion}/>:drawingRegion}
+      {drawingRegion ? <Region key={`drawing`} region={drawingRegion}/> : drawingRegion}
     </Wrapper>
   );
 });
@@ -347,6 +349,9 @@ export default observer(
       imgStyle: {},
       ratio: 1,
       pointer: [0, 0],
+      rectLocation : [],
+      keyLocation : [],
+      polygonLocation : [],
     }
 
     imageRef = createRef();
@@ -361,10 +366,7 @@ export default observer(
 
     handleMouseDown = e => {
       const { item } = this.props;
-      const { rectLocation } = this.props;
-      const { keyLocation } = this.props;
-      const { polygonLocation } = this.props;
-
+      
       item.updateSkipInteractions(e);
       console.log("mousedown e :", e)
       // console.log("e.target :", e.target)
@@ -382,15 +384,16 @@ export default observer(
           const y3 = e.target.attrs.y + (e.target.attrs.height);
           const x4 = e.target.attrs.x + (e.target.attrs.width);
           const y4 = e.target.attrs.y + (e.target.attrs.height);
-          
-          console.log("x1 :", x1, "y1 :", y1, "x2 :", x2, "y2 : ", y2, "x3 : ", x3, "y3 :", y3, "x4 :", x4, "y4 :", y4)
+          this.setState({rectLocation: {x1, y1, x2, y2, x3, y3, x4, y4}})
+          // console.log("x1 :", x1, "y1 :", y1, "x2 :", x2, "y2 : ", y2, "x3 : ", x3, "y3 :", y3, "x4 :", x4, "y4 :", y4)
+          console.log({rectLocation : this.state.rectLocation})
         
         } else {
           console.log("x :", e.target.attrs.x, "y :", e.target.attrs.y)
         }
         
       } else if (e.target.className === "Line"){
-        console.log({keypoints : e.target.attrs.points})
+        console.log({polygon : e.target.attrs.points})
       } 
       
       // item.freezeHistory();

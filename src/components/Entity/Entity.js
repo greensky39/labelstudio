@@ -174,20 +174,20 @@ export default observer(({ store, annotation }) => {
             </Hotkey.Tooltip>
           )}
         </Space>
-        {/* <Tooltip placement="topLeft" title="Hide: [h]"> */}
-        {/*   <Button */}
-        {/*     className={styles.button} */}
-        {/*     onClick={() => { */}
-        {/*         node.toggleHidden(); */}
-        {/*         //node.unselectRegion(); */}
-        {/*         //node.selectRegion(); */}
-        {/*         // annotation.startRelationMode(node); */}
-        {/*     }} */}
-        {/*   > */}
-        {/*     { node.hidden ? <EyeOutlined /> : <EyeInvisibleOutlined /> } */}
-        {/*     {store.settings.enableHotkeys && store.settings.enableTooltips && <Hint>[ h ]</Hint>} */}
-        {/*   </Button> */}
-        {/* </Tooltip> */}
+        {/* <Tooltip placement="topLeft" title="Hide: [h]">
+          <Button
+             className={styles.button} 
+            onClick={() => { 
+                 node.toggleHidden(); 
+                 //node.unselectRegion(); 
+                 //node.selectRegion(); 
+                 // annotation.startRelationMode(node); 
+             }} 
+           > 
+             { node.hidden ? <EyeOutlined /> : <EyeInvisibleOutlined /> } 
+            {store.settings.enableHotkeys && store.settings.enableTooltips && <Hint>[ h ]</Hint>} 
+           </Button> 
+        </Tooltip> */}
       </div>
 
       {editMode && (
